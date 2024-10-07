@@ -60,7 +60,7 @@ jobs:
         sphinx-build -b html docsrc docs -E -d "docsrc/_doctrees"
     - name: Commit and push the new documentation
       run: |
-        git config user.name "Brian Warner (autocommit)"
+        git config user.name "Brian Warner"
         git config user.email brian@bdwarner.com
         git add docs
         git commit -s -m "Rebuild the documentation" || exit 0
