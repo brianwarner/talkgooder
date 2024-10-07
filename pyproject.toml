@@ -24,10 +24,10 @@
     ]
 
 [project.urls]
-    Homepage = "https://github.com/brianwarner/indifferent"
+    Homepage = "https://bdwarner.com/talkgooder/"
     Documentation = "https://bdwarner.com/talkgooder/"
-    Repository = "https://github.com/brianwarner/indifferent"
-    Issues = "https://github.com/brianwarner/indifferent/issues"
+    Repository = "https://github.com/brianwarner/talkgooder"
+    Issues = "https://github.com/brianwarner/talkgooder/issues"
 
 [tool.setuptools_scm]
     version_scheme = "no-guess-dev"
