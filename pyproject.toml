@@ -24,8 +24,8 @@
     ]
 
 [project.urls]
-    Homepage = "https://bdwarner.com/talkgooder/"
-    Documentation = "https://bdwarner.com/talkgooder/"
+    Homepage = "https://brianwarner.github.io/talkgooder/"
+    Documentation = "https://brianwarner.github.io/talkgooder/"
     Repository = "https://github.com/brianwarner/talkgooder"
     Issues = "https://github.com/brianwarner/talkgooder/issues"
 
