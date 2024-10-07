@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.abspath("../src/talkgooder"))
 sys.path.insert(0, os.path.abspath(".."))
 
-from _version import __version__ as version  # noqa E402, must update path before use
+from _version import __version__ as version  # noqa E402 # type: ignore # won't exist until build
 
 extensions = [
     "sphinx.ext.autodoc",
