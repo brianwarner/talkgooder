@@ -6,6 +6,7 @@ name: Test, build, and generate docs
 on: 
   push:
     branches:
+      - '**'
       - '!main'
 
 permissions:
