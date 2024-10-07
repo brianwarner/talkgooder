@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Test, build, generate docs, and publish to PyPI
 
 on:
   push:
