@@ -71,30 +71,30 @@ def plural(
 
         # Same singular as plural, can be extended via addl_same parameter
         en_us_same = [
-            "sheep",
-            "fish",
-            "salmon",
-            "buffalo",
-            "moose",
-            "shrimp",
-            "trout",
             "aircraft",
-            "watercraft",
-            "hovercraft",
-            "spacecraft",
+            "buffalo",
             "deer",
+            "fish",
             "goose",
+            "hovercraft",
+            "moose",
+            "salmon",
+            "sheep",
+            "shrimp",
+            "spacecraft",
+            "trout",
+            "watercraft",
         ] + addl_same
 
         # Doesn't follow other rules, plural is always s, can be extended via addl_special_s
         en_us_special_s = [
-            "roof",
-            "proof",
-            "spoof",
-            "piano",
             "cello",
             "hello",
             "photo",
+            "piano",
+            "proof",
+            "roof",
+            "spoof",
             "zero",
         ] + addl_special_s
 
@@ -103,16 +103,16 @@ def plural(
             list(
                 {
                     "child": "children",
-                    "person": "people",
-                    "tooth": "teeth",
-                    "ox": "oxen",
-                    "mouse": "mice",
-                    "man": "men",
-                    "woman": "women",
-                    "louse": "lice",
-                    "die": "dice",
-                    "phenomenon": "phenomena",
                     "criterion": "criteria",
+                    "die": "dice",
+                    "louse": "lice",
+                    "man": "men",
+                    "mouse": "mice",
+                    "ox": "oxen",
+                    "person": "people",
+                    "phenomenon": "phenomena",
+                    "tooth": "teeth",
+                    "woman": "women",
                 }.items()
             )
             + list(addl_irregular.items())
