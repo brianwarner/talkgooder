@@ -71,30 +71,30 @@ def plural(
 
         # Same singular as plural, can be extended via addl_same parameter
         en_us_same = [
-            "sheep",
-            "fish",
-            "salmon",
-            "buffalo",
-            "moose",
-            "shrimp",
-            "trout",
             "aircraft",
-            "watercraft",
-            "hovercraft",
-            "spacecraft",
+            "buffalo",
             "deer",
+            "fish",
             "goose",
+            "hovercraft",
+            "moose",
+            "salmon",
+            "sheep",
+            "shrimp",
+            "spacecraft",
+            "trout",
+            "watercraft",
         ] + addl_same
 
         # Doesn't follow other rules, plural is always s, can be extended via addl_special_s
         en_us_special_s = [
-            "roof",
-            "proof",
-            "spoof",
-            "piano",
             "cello",
             "hello",
             "photo",
+            "piano",
+            "proof",
+            "roof",
+            "spoof",
             "zero",
         ] + addl_special_s
 
@@ -103,16 +103,16 @@ def plural(
             list(
                 {
                     "child": "children",
-                    "person": "people",
-                    "tooth": "teeth",
-                    "ox": "oxen",
-                    "mouse": "mice",
-                    "man": "men",
-                    "woman": "women",
-                    "louse": "lice",
-                    "die": "dice",
-                    "phenomenon": "phenomena",
                     "criterion": "criteria",
+                    "die": "dice",
+                    "louse": "lice",
+                    "man": "men",
+                    "mouse": "mice",
+                    "ox": "oxen",
+                    "person": "people",
+                    "phenomenon": "phenomena",
+                    "tooth": "teeth",
+                    "woman": "women",
                 }.items()
             )
             + list(addl_irregular.items())
@@ -317,7 +317,7 @@ def isAre(
 ) -> str:
     """Given a quanity, determine if article should be ``is`` or ``are``.
 
-    Given a quantity of nouns or noun-equivalents, determine whether the most article should be
+    Given a quantity of nouns or noun-equivalents, determine whether the article should be
     ``is`` or ``are``. For example, "there is one cat," and "there are two cats."
 
     **Supported locales:**
@@ -348,6 +348,48 @@ def isAre(
             return "is"
         else:
             return "are"
+
+    else:
+        raise ValueError("Language must be a supported locale.")
+
+
+def wasWere(
+    number: int | float,
+    language="en-US",
+) -> str:
+    """Given a quanity, determine if article should be ``ws`` or ``were``.
+
+    Given a quantity of nouns or noun-equivalents, determine whether the article should be
+    ``was`` or ``were``. For example, "there was one cat," and "there were two cats."
+
+    **Supported locales:**
+
+    * ``en-US``: American English
+
+    Args:
+        number (int | float):
+            Quantity of items.
+        language (str):
+            Which language rules to apply, specified by locale (default ``en-US``).
+
+    Returns:
+        String:
+            ``was`` or ``were``, as appropriate.
+
+    Raises:
+        TypeError: number must be an int or float.
+        ValueError: language must be a supported locale.
+    """
+
+    if not isinstance(number, (int, float)):
+        raise TypeError("Number must be an int or a float.")
+
+    if language.lower() == "en-us":
+        # Anything other than integer 1 (even 1.0) uses "were"
+        if number == 1 and isinstance(number, int):
+            return "was"
+        else:
+            return "were"
 
     else:
         raise ValueError("Language must be a supported locale.")

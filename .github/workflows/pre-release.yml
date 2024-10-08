@@ -41,6 +41,7 @@ jobs:
         pytest
   build:
     name: Build and generate documentation
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
