@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>talkGooder documentation &mdash; talkGooder 0.0.post1.dev1+gdebd171 documentation</title>
+  <title>talkGooder documentation &mdash; talkGooder 1.0.4.post1.dev2+g818c923.d20241008 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=80a157c8"></script>
+        <script src="_static/documentation_options.js?v=cf89239c"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -37,7 +37,7 @@
             talkGooder
           </a>
               <div class="version">
-                0.0.post1.dev1+gdebd171
+                1.0.4.post1.dev2+g818c923.d20241008
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,6 +57,7 @@
 <li><a class="reference internal" href="#talkgooder.num2word"><code class="docutils literal notranslate"><span class="pre">num2word()</span></code></a></li>
 <li><a class="reference internal" href="#talkgooder.plural"><code class="docutils literal notranslate"><span class="pre">plural()</span></code></a></li>
 <li><a class="reference internal" href="#talkgooder.possessive"><code class="docutils literal notranslate"><span class="pre">possessive()</span></code></a></li>
+<li><a class="reference internal" href="#talkgooder.wasWere"><code class="docutils literal notranslate"><span class="pre">wasWere()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +162,7 @@ else uses <code class="docutils literal notranslate"><span class="pre">a</span><
 <dt class="sig sig-object py" id="talkgooder.isAre">
 <span class="sig-prename descclassname"><span class="pre">talkgooder.</span></span><span class="sig-name descname"><span class="pre">isAre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en-US'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/talkgooder.html#isAre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#talkgooder.isAre" title="Link to this definition"></a></dt>
 <dd><p>Given a quanity, determine if article should be <code class="docutils literal notranslate"><span class="pre">is</span></code> or <code class="docutils literal notranslate"><span class="pre">are</span></code>.</p>
-<p>Given a quantity of nouns or noun-equivalents, determine whether the most article should be
+<p>Given a quantity of nouns or noun-equivalents, determine whether the article should be
 <code class="docutils literal notranslate"><span class="pre">is</span></code> or <code class="docutils literal notranslate"><span class="pre">are</span></code>. For example, “there is one cat,” and “there are two cats.”</p>
 <p><strong>Supported locales:</strong></p>
 <ul class="simple">
@@ -296,6 +297,38 @@ to accommodate exceptions specific to the situation.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – Text must be a string.</p></li>
 <li><p><strong>ValueError</strong> – Language must be a supported locale.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="talkgooder.wasWere">
+<span class="sig-prename descclassname"><span class="pre">talkgooder.</span></span><span class="sig-name descname"><span class="pre">wasWere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en-US'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/talkgooder.html#wasWere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#talkgooder.wasWere" title="Link to this definition"></a></dt>
+<dd><p>Given a quanity, determine if article should be <code class="docutils literal notranslate"><span class="pre">ws</span></code> or <code class="docutils literal notranslate"><span class="pre">were</span></code>.</p>
+<p>Given a quantity of nouns or noun-equivalents, determine whether the article should be
+<code class="docutils literal notranslate"><span class="pre">was</span></code> or <code class="docutils literal notranslate"><span class="pre">were</span></code>. For example, “there was one cat,” and “there were two cats.”</p>
+<p><strong>Supported locales:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">en-US</span></code>: American English</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number</strong> (<em>int</em><em> | </em><em>float</em>) – Quantity of items.</p></li>
+<li><p><strong>language</strong> (<em>str</em>) – Which language rules to apply, specified by locale (default <code class="docutils literal notranslate"><span class="pre">en-US</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">was</span></code> or <code class="docutils literal notranslate"><span class="pre">were</span></code>, as appropriate.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – number must be an int or float.</p></li>
+<li><p><strong>ValueError</strong> – language must be a supported locale.</p></li>
 </ul>
 </dd>
 </dl>
