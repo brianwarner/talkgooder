@@ -33,6 +33,7 @@ jobs:
         pytest
   pypi-publish:
     name: Upload release to PyPI and update documentation
+    needs: test
     runs-on: ubuntu-latest
     environment: release
     permissions:
