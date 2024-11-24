@@ -9,10 +9,6 @@ on:
       - '**'
       - '!main'
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   test:
     name: Test Python versions
@@ -29,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
+        python -m pip install flake8 pytest pytest-pretty
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -40,26 +36,33 @@ jobs:
       run: |
         pytest
   build:
-    name: Build and generate documentation
+    name: Regenerate documentation
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: '3.12'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install build setuptools setuptools-scm sphinx sphinx_rtd_theme myst_parser
+        python -m pip install -r requirements-dev.txt
     - name: Build the packages
       run: |
         python -m build
     - name: Generate documentation
       run: |
         sphinx-build -b html docsrc docs -E -d "docsrc/_doctrees"
+    - name: Check if there are any changes
+      id: verify_diff
+      run: |
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
     - name: Commit and push the new documentation
+      if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git config user.name "Brian Warner"
         git config user.email brian@bdwarner.com
