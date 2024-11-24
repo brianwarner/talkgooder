@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>talkGooder documentation &mdash; talkGooder 0.0.post1.dev1+gbbb2af3 documentation</title>
+  <title>talkGooder documentation &mdash; talkGooder 1.1.0.post1.dev1+g2d50de4.d20241124 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=435997b2"></script>
+      <script src="_static/documentation_options.js?v=b7d5b88b"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -87,14 +87,19 @@
 <h1>talkGooder documentation<a class="headerlink" href="#talkgooder-documentation" title="Link to this heading"></a></h1>
 <section id="talk-gooder">
 <h2>Talk Gooder<a class="headerlink" href="#talk-gooder" title="Link to this heading"></a></h2>
+<p><img alt="PyPI - License" src="https://img.shields.io/pypi/l/talkgooder?color=blue" />
+<img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/brianwarner/talkgooder/pre-release.yml?label=Build%20and%20test" />
+<img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/brianwarner/talkgooder/release.yml?label=Publish%20to%20PyPI" />
+<img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/talkgooder" /></p>
 <p><code class="docutils literal notranslate"><span class="pre">talkgooder</span></code> attempts to smooth out grammar, punctuation, and number-related corner cases when formatting text for human consumption. It is intended for applications where you know there’s a noun and are trying to generate text, but you don’t know much about it.</p>
 <p>It handles:</p>
 <ul class="simple">
-<li><p>Plurals</p></li>
-<li><p>Possessives</p></li>
-<li><p>Numbers to words</p></li>
-<li><p>“There is” vs. “There are”</p></li>
-<li><p>“A” vs. “An”</p></li>
+<li><p>Plurals: “one cat” vs. “zero cats”</p></li>
+<li><p>Possessives: “the cat’s toy” vs. “both cats’ toys”</p></li>
+<li><p>Numbers to words: 2 == “two”, 16 == 16</p></li>
+<li><p>“There is” vs. “There are”: “There is one cat” vs. “There are two cats”</p></li>
+<li><p>“A” vs. “An”: “A cat” vs. “An orange cat”</p></li>
+<li><p>“Was” vs. “Were”: “There was one cat” vs. “There were two cats”</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">talkgooder</span></code> is currently specific to American English, but it is extensible to other languages.</p>
 <p>Contributions are welcome at <a class="reference external" href="https://github.com/brianwarner/talkgooder">github.com/brianwarner/talkgooder</a>!</p>
@@ -117,6 +122,9 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#talkgooder.possessive" title="talkgooder.possessive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">talkgooder.possessive</span></code></a></p></td>
 <td><p>Convert a noun to its possessive, because apostrophes can be hard.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#talkgooder.wasWere" title="talkgooder.wasWere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">talkgooder.wasWere</span></code></a></p></td>
+<td><p>Given a quanity, determine if article should be <code class="docutils literal notranslate"><span class="pre">ws</span></code> or <code class="docutils literal notranslate"><span class="pre">were</span></code>.</p></td>
 </tr>
 </tbody>
 </table>

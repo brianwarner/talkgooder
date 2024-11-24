@@ -22,6 +22,7 @@ Functions
    talkgooder.num2word :no-index:
    talkgooder.plural :no-index:
    talkgooder.possessive :no-index:
+   talkgooder.wasWere :no-index:
 
 -----
 
