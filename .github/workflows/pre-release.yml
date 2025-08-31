@@ -36,11 +36,9 @@ jobs:
       run: |
         pytest
   build:
-    name: Regenerate documentation
+    name: Build and test
     needs: test
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -54,18 +52,6 @@ jobs:
     - name: Build the packages
       run: |
         python -m build
-    - name: Generate documentation
+    - name: Test documentation build
       run: |
         sphinx-build -b html docsrc docs -E -d "docsrc/_doctrees"
-    - name: Check if there are any changes
-      id: verify_diff
-      run: |
-        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
-    - name: Commit and push the new documentation
-      if: steps.verify_diff.outputs.changed == 'true'
-      run: |
-        git config user.name "Brian Warner"
-        git config user.email brian@bdwarner.com
-        git add docs
-        git commit -s -m "Rebuild the documentation" || exit 0
-        git push

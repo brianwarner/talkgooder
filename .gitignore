@@ -9,3 +9,4 @@ __pycache__
 _version.py
 .pytest_cache
 docsrc/_doctrees
+docs/

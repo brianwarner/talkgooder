@@ -7,12 +7,20 @@ clean:
 	dist \
 	_version.py \
 	src/*.egg-info \
-	docsrc/_doctrees
-	
+	docsrc/_doctrees \
+	docs
+
+lint:
+	flake8 src/ tests/ --count --max-complexity=10 --max-line-length=100 --statistics --exit-zero
+	black src/ tests/ --check --diff
+
+format:
+	black src/ tests/
+
 test:
 	pytest
 
-build: clean test
+build: clean lint test
 	python3 -m build
 
 html: build

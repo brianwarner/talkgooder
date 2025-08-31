@@ -7,3 +7,5 @@ setuptools-scm
 sphinx
 sphinx_rtd_theme
 myst_parser
+black
+flake8
