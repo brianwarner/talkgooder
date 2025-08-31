@@ -70,4 +70,7 @@ jobs:
         python -m pip install -r requirements-dev.txt
     - name: Test documentation build
       run: |
+        # Install package in development mode to generate _version.py
+        pip install -e .
+        # Build documentation
         sphinx-build -b html docsrc docs -E -d "docsrc/_doctrees"
