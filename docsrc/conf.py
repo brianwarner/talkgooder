@@ -26,7 +26,7 @@ extensions = [
 ]
 
 project = "talkGooder"
-copyright = "2024, Brian Warner"
+copyright = "Brian Warner"
 author = "Brian Warner"
 release = version
 
