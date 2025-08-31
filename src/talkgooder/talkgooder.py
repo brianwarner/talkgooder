@@ -430,7 +430,22 @@ def aAn(
     if language.lower() == "en-us":
 
         # Vowels, numbers that start with 8, and 18 use the "an" article
-        if str(noun).lower().startswith(("a", "e", "i", "o", "u", "8", "18.")) or str(noun) == "18":
+        if (
+            str(noun)
+            .lower()
+            .startswith(
+                (
+                    "a",
+                    "e",
+                    "i",
+                    "o",
+                    "u",
+                    "8",
+                    "18.",
+                )
+            )
+            or str(noun) == "18"
+        ):
             return "an"
         else:
             return "a"
