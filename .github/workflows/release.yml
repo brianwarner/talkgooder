@@ -79,6 +79,8 @@ jobs:
       run: |
         # Ensure docs directory exists
         mkdir -p docs
+        # Install package in development mode to generate _version.py
+        pip install -e .
         # Build documentation
         sphinx-build -b html docsrc docs -E -d "docsrc/_doctrees"
         # Create .nojekyll to disable Jekyll processing
