@@ -1,25 +1,210 @@
 # SPDX-License-Identifier: MIT
 
 import re
-from pprint import pprint  # noqa E401
-import sys  # noqa E401
+from typing import Dict, List, Pattern, Tuple
 
 """Utilities to smooth out language rules.
 
-``talkgooder`` attempts to smooth out grammar, punctuation, and number-related corner cases when
-formatting text for human consumption. It is intended for applications where you know there's a
-noun and are trying to generate text, but you don't know much about it.
+``talkgooder`` attempts to smooth out grammar, punctuation, and
+number-related corner cases when formatting text for human consumption.
+It is intended for applications where you know there's a noun and are
+trying to generate text, but you don't know much about it.
 """
+
+
+def _get_plural_data(
+    addl_same: List[str] = None,
+    addl_special_s: List[str] = None,
+    addl_irregular: Dict[str, str] = None,
+) -> Tuple[List[str], List[str], Dict[str, str], Pattern[str]]:
+    """Get plural data structures for en-US locale."""
+    if addl_same is None:
+        addl_same = []
+    if addl_special_s is None:
+        addl_special_s = []
+    if addl_irregular is None:
+        addl_irregular = {}
+
+    # Same singular as plural, can be extended via addl_same parameter
+    en_us_same = [
+        "aircraft",
+        "buffalo",
+        "deer",
+        "fish",
+        "goose",
+        "hovercraft",
+        "moose",
+        "salmon",
+        "sheep",
+        "shrimp",
+        "spacecraft",
+        "trout",
+        "watercraft",
+    ] + addl_same
+
+    # Doesn't follow other rules, plural is always s, can be extended via addl_special_s
+    en_us_special_s = [
+        "cello",
+        "hello",
+        "photo",
+        "piano",
+        "proof",
+        "roof",
+        "spoof",
+        "zero",
+    ] + addl_special_s
+
+    # Irregular plurals where there's no rule, it just is, can be extended via addl_irregular
+    en_us_irregular = dict(
+        list(
+            {
+                "child": "children",
+                "criterion": "criteria",
+                "die": "dice",
+                "louse": "lice",
+                "man": "men",
+                "mouse": "mice",
+                "ox": "oxen",
+                "person": "people",
+                "phenomenon": "phenomena",
+                "tooth": "teeth",
+                "woman": "women",
+            }.items()
+        )
+        + list(addl_irregular.items())
+    )
+
+    # Consonant before y pattern
+    en_us_ies_pattern = re.compile(
+        r"[b-df-hj-np-tv-z]+y$",
+        re.IGNORECASE,
+    )
+
+    return en_us_same, en_us_special_s, en_us_irregular, en_us_ies_pattern
+
+
+def _get_plural_suffixes(text: str, caps_mode: int) -> Dict[str, str]:
+    """Get appropriate suffixes based on casing mode."""
+    # If the entire word is upper case or caps_mode is 1, capitalize it
+    if caps_mode == 2:
+        casing = "lower"
+    elif text.isupper() or caps_mode == 1:
+        casing = "upper"
+    else:
+        casing = "lower"
+
+    if casing == "upper":
+        return {
+            "i": "I",
+            "a": "A",
+            "ices": "ICES",
+            "es": "ES",
+            "ies": "IES",
+            "ves": "VES",
+            "s": "S",
+        }
+    else:
+        return {
+            "i": "i",
+            "a": "a",
+            "ices": "ices",
+            "es": "es",
+            "ies": "ies",
+            "ves": "ves",
+            "s": "s",
+        }
+
+
+def _check_same_singular_plural(text: str, en_us_same: List[str]) -> str | None:
+    """Check if word has same singular and plural form."""
+    if text.lower() in en_us_same:
+        return text
+    return None
+
+
+def _check_irregular_plurals(text: str, en_us_irregular: Dict[str, str]) -> str | None:
+    """Check and apply irregular plural rules."""
+    for item in en_us_irregular.keys():
+        if text.lower().endswith(item.lower()):
+            if text.isupper():
+                return en_us_irregular[item].upper()
+            else:
+                return en_us_irregular[item]
+    return None
+
+
+def _apply_suffix_rules(
+    text: str,
+    suffixes: Dict[str, str],
+    en_us_special_s: List[str],
+    en_us_ies_pattern: Pattern[str],
+) -> str:
+    """Apply standard suffix-based pluralization rules."""
+    text_lower = text.lower()
+
+    if text_lower in en_us_special_s:
+        # Certain words always end with s for Reasons
+        return f"{text}{suffixes['s']}"
+
+    if text_lower.endswith("us"):
+        # Words that end in "us" change to "i" when plural
+        return f"{text[:-2]}{suffixes['i']}"
+
+    if text_lower.endswith("um"):
+        # Words that end in "um" change to "a" when plural
+        return f"{text[:-2]}{suffixes['a']}"
+
+    if text_lower.endswith(("ix", "ex")):
+        # Words that end in "ix" or "ex" change to "ices" when plural
+        return f"{text[:-2]}{suffixes['ices']}"
+
+    if text_lower.endswith(("o", "s", "x", "z", "ch", "sh", "is")):
+        # Words ending in these letters/combinations change to "es"
+        return f"{text}{suffixes['es']}"
+
+    if text_lower.endswith(("f", "fe")):
+        # Words that end in "f" or "fe" end in "ves" when plural
+        return f"{text[:-1]}{suffixes['ves']}"
+
+    if en_us_ies_pattern.findall(text):
+        # Words ending in consonant then "y" end in "ies" when plural
+        return f"{text[:-1]}{suffixes['ies']}"
+
+    # Remaining words end in "s" when plural
+    return f"{text}{suffixes['s']}"
+
+
+def _apply_plural_rules(
+    text: str,
+    suffixes: Dict[str, str],
+    en_us_same: List[str],
+    en_us_special_s: List[str],
+    en_us_irregular: Dict[str, str],
+    en_us_ies_pattern: Pattern[str],
+) -> str:
+    """Apply plural rules to determine the correct plural form."""
+    # Check if word is same whether singular or plural
+    same_result = _check_same_singular_plural(text, en_us_same)
+    if same_result is not None:
+        return same_result
+
+    # Check irregular plurals
+    irregular_result = _check_irregular_plurals(text, en_us_irregular)
+    if irregular_result is not None:
+        return irregular_result
+
+    # Apply standard suffix rules
+    return _apply_suffix_rules(text, suffixes, en_us_special_s, en_us_ies_pattern)
 
 
 def plural(
     text: str,
     number: int | float,
-    language="en-US",
-    addl_same=[],
-    addl_special_s=[],
-    addl_irregular={},
-    caps_mode=0,
+    language: str = "en-US",
+    addl_same: List[str] = None,
+    addl_special_s: List[str] = None,
+    addl_irregular: Dict[str, str] = None,
+    caps_mode: int = 0,
 ) -> str:
     """Determine the plural of a noun depending upon quantity.
 
@@ -41,10 +226,11 @@ def plural(
         addl_same (list):
             Additional words where the singular and plural are the same.
         addl_special_s (list):
-            Additional words that always end in s for odd reasons (e.g., ``["piano","hello",...]``).
+            Additional words that always end in s for odd reasons
+            (e.g., ``["piano","hello",...]``).
         addl_irregular (dict):
-            Additional pairs of irregular plural nouns (e.g., ``{"mouse": "mice", "person":
-            "people", ...}``).
+            Additional pairs of irregular plural nouns (e.g.,
+            ``{"mouse": "mice", "person": "people", ...}``).
         caps_mode (int):
 
             * ``0``: Attempt to infer whether suffix is lower or upper case (default).
@@ -64,138 +250,45 @@ def plural(
     # https://www.grammarly.com/blog/irregular-plural-nouns/
 
     # Make sure something reasonable was supplied
+    if not isinstance(text, str):
+        raise TypeError("Text must be a string")
+
     if not isinstance(number, (int, float)):
         raise TypeError("Number must be an int or a float")
 
     if language.lower() == "en-us":
-
-        # Same singular as plural, can be extended via addl_same parameter
-        en_us_same = [
-            "aircraft",
-            "buffalo",
-            "deer",
-            "fish",
-            "goose",
-            "hovercraft",
-            "moose",
-            "salmon",
-            "sheep",
-            "shrimp",
-            "spacecraft",
-            "trout",
-            "watercraft",
-        ] + addl_same
-
-        # Doesn't follow other rules, plural is always s, can be extended via addl_special_s
-        en_us_special_s = [
-            "cello",
-            "hello",
-            "photo",
-            "piano",
-            "proof",
-            "roof",
-            "spoof",
-            "zero",
-        ] + addl_special_s
-
-        # Irregular plurals where there's no rule, it just is, can be extended via addl_irregular
-        en_us_irregular = dict(
-            list(
-                {
-                    "child": "children",
-                    "criterion": "criteria",
-                    "die": "dice",
-                    "louse": "lice",
-                    "man": "men",
-                    "mouse": "mice",
-                    "ox": "oxen",
-                    "person": "people",
-                    "phenomenon": "phenomena",
-                    "tooth": "teeth",
-                    "woman": "women",
-                }.items()
-            )
-            + list(addl_irregular.items())
-        )
-
-        # Consonent before y pattern
-        en_us_ies_pattern = re.compile(
-            r"[b-df-hj-np-tv-z]+y$",
-            re.IGNORECASE,
-        )
-
-        # If the entire word is upper case or caps_mode is 1, capitalize it
-        if caps_mode == 2:
-            casing = "lower"
-        elif text.isupper() or caps_mode == 1:
-            casing = "upper"
-        else:
-            casing = "lower"
-
-        if casing == "upper":
-            i = "I"
-            a = "A"
-            ices = "ICES"
-            es = "ES"
-            ies = "IES"
-            ves = "VES"
-            s = "S"
-
-        else:
-            i = "i"
-            a = "a"
-            ices = "ices"
-            es = "es"
-            ies = "ies"
-            ves = "ves"
-            s = "s"
-
         # If the number is an integer that is exactly 1, nothing to do
         if isinstance(number, int) and number == 1:
             return text
 
-        # If the word is the same whether singular or plural, nothing to do
-        if text.lower() in en_us_same:
-            return text
+        # Handle None defaults
+        if addl_same is None:
+            addl_same = []
+        if addl_special_s is None:
+            addl_special_s = []
+        if addl_irregular is None:
+            addl_irregular = {}
 
-        # Some words follow no rules whatsoever
-        for item in en_us_irregular.keys():
-            if text.lower().endswith(item.lower()):
-                if text.isupper():
-                    return en_us_irregular[item].upper()
-                else:
-                    return en_us_irregular[item]
+        # Get plural data structures
+        (
+            en_us_same,
+            en_us_special_s,
+            en_us_irregular,
+            en_us_ies_pattern,
+        ) = _get_plural_data(addl_same, addl_special_s, addl_irregular)
 
-        if text.lower() in en_us_special_s:
-            # Certain words always end with s for Reasons
-            return "%s%s" % (text, s)
+        # Get appropriate suffixes
+        suffixes = _get_plural_suffixes(text, caps_mode)
 
-        if text.lower().endswith("us"):
-            # Words that end in "us" change to "i" when plural
-            return "%s%s" % (text[:-2], i)
-
-        if text.lower().endswith("um"):
-            # Words that end in "um" change to "a" when plural
-            return "%s%s" % (text[:-2], a)
-
-        if text.lower().endswith(("ix", "ex")):
-            # Words that end in "ix" or "ex" change to "ices" when plural
-            return "%s%s" % (text[:-2], ices)
-
-        if text.lower().endswith(("o", "s", "x", "z", "ch", "sh", "is")):
-            # Words that end in "o", "s", "x", "z", "ch", "sh", and "is" change to "es" when plural
-            return "%s%s" % (text, es)
-
-        if text.lower().endswith(("f", "fe")):
-            # Words that end in "f" or "fe" end in "ves" when plural
-            return "%s%s" % (text[:-1], ves)
-
-        if en_us_ies_pattern.findall(text):
-            # Words that end in a consonant then "y" end in "ies" when plural
-            return "%s%s" % (text[:-1], ies)
-
-        # Remaining words end in "s" when plural
-        return "%s%s" % (text, s)
+        # Apply plural rules
+        return _apply_plural_rules(
+            text,
+            suffixes,
+            en_us_same,
+            en_us_special_s,
+            en_us_irregular,
+            en_us_ies_pattern,
+        )
 
     else:
         raise ValueError("Language must be a supported locale.")
@@ -203,8 +296,8 @@ def plural(
 
 def possessive(
     text: str,
-    language="en-US",
-    caps_mode=0,
+    language: str = "en-US",
+    caps_mode: int = 0,
 ) -> str:
     """Convert a noun to its possessive, because apostrophes can be hard.
 
@@ -240,18 +333,18 @@ def possessive(
     if language.lower() == "en-us":
         if text.endswith("s"):
             # When a noun ends in "s", just add an apostrophe
-            return "%s'" % text
+            return f"{text}'"
 
         else:
             if caps_mode == 2:
                 # Force lower case
-                return "%s's" % text
+                return f"{text}'s"
             elif text.isupper() or caps_mode == 1:
                 # Force upper case or detect upper case
-                return "%s'S" % text
+                return f"{text}'S"
                 # Default is lower
             else:
-                return "%s's" % text
+                return f"{text}'s"
 
     else:
         raise ValueError("Language must be a supported locale.")
@@ -259,7 +352,7 @@ def possessive(
 
 def num2word(
     number: int,
-    language="en-US",
+    language: str = "en-US",
 ) -> str:
     """Determine if an integer should be expanded to a word (per the APA style manual).
 
@@ -313,9 +406,9 @@ def num2word(
 
 def isAre(
     number: int | float,
-    language="en-US",
+    language: str = "en-US",
 ) -> str:
-    """Given a quanity, determine if article should be ``is`` or ``are``.
+    """Given a quantity, determine if article should be ``is`` or ``are``.
 
     Given a quantity of nouns or noun-equivalents, determine whether the article should be
     ``is`` or ``are``. For example, "there is one cat," and "there are two cats."
@@ -355,9 +448,9 @@ def isAre(
 
 def wasWere(
     number: int | float,
-    language="en-US",
+    language: str = "en-US",
 ) -> str:
-    """Given a quanity, determine if article should be ``ws`` or ``were``.
+    """Given a quantity, determine if article should be ``was`` or ``were``.
 
     Given a quantity of nouns or noun-equivalents, determine whether the article should be
     ``was`` or ``were``. For example, "there was one cat," and "there were two cats."
@@ -397,7 +490,7 @@ def wasWere(
 
 def aAn(
     noun: str | int | float,
-    language="en-US",
+    language: str = "en-US",
 ) -> str:
     """Given a noun or noun-equivalent, determine whether the article is ``a`` or ``an``.
 
