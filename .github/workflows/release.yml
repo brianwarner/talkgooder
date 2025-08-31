@@ -77,8 +77,17 @@ jobs:
         python -m pip install -r requirements-dev.txt
     - name: Generate documentation
       run: |
+        # Ensure docs directory exists
+        mkdir -p docs
+        # Build documentation
         sphinx-build -b html docsrc docs -E -d "docsrc/_doctrees"
+        # Create .nojekyll to disable Jekyll processing
         touch docs/.nojekyll
+        # Debug: list files in docs directory
+        echo "Contents of docs directory:"
+        ls -la docs/
+        echo "Checking for .nojekyll:"
+        ls -la docs/.nojekyll || echo ".nojekyll not found"
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload artifact
